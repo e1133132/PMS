@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function Navbar() {
   return (
     <View style={styles.navbar}>
-      <Text style={styles.navbarText}>Activity 3                                     Sanchez, L</Text>
+      <Text style={styles.navbarText}>KHL-PMS</Text>
     </View>
   );
 }

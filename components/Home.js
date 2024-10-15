@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 
-export default function Home({ route }) {
+export default function Home({ route,navigation }) {
   const { token, userName } = route.params;
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,9 @@ export default function Home({ route }) {
         // update user data
         if (customer) {
           setUserData(customer);
+          navigation.navigate('IssueNote', { customer_ID: customer.customer_ID, token });
+          navigation.navigate('RetrieveNote', { customer_ID: customer.customer_ID, token });
+          console.log('Customer ID:', customer.customer_ID);
         } else {
           console.warn('No customer data found for the provided username');
         }

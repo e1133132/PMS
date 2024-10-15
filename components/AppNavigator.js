@@ -6,8 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './Login';
 import Home from './Home';
 import Add from './Add';
-import EditScreen from './EditScreen';
+import IssueNote from './IssueNote';
 import Navbar from './Navbar';
+import RetrieveNote from './RetrieveNote';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,8 +24,14 @@ function BottomTabNavigator({ route }) {
         initialParams={{ token, userName, userNumber, expiresIn }}
         options={{ title: 'Persona' }}
       />
-      <Tab.Screen name="Add" component={Add} options={{ title: 'Issue Notes' }} />
-      <Tab.Screen name="Edit" component={Add} options={{ title: 'Retrieve Notes' }} />
+      <Tab.Screen
+        name="IssueNote"
+        component={IssueNote}
+        options={{ title: 'Issue Notes' }}
+      />
+      <Tab.Screen name="RetrieveNote" 
+      component={RetrieveNote} 
+      options={{ title: 'Retrieve Notes' }} />
     </Tab.Navigator>
   );
 }

@@ -62,7 +62,7 @@ export default function Add({ navigation, route }) {
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Hire Order No"
           onChangeText={text => setUsername(text)}
           value={username}
           autoCapitalize="none"
@@ -70,7 +70,7 @@ export default function Add({ navigation, route }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter email"
+          placeholder="Issue Qty"
           onChangeText={text => setEmail(text)}
           value={email}
           keyboardType="email-address"
@@ -79,7 +79,7 @@ export default function Add({ navigation, route }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Password"
+          placeholder="Issue Date"
           onChangeText={text => setPassword(text)}
           value={password}
           secureTextEntry={true}
@@ -88,7 +88,52 @@ export default function Add({ navigation, route }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Confirm Password"
+          placeholder="Vehicle No"
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+          <TextInput
+          style={styles.input}
+          placeholder="Driver"
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+          <TextInput
+          style={styles.input}
+          placeholder="Driver IC"
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+          <TextInput
+          style={styles.input}
+          placeholder="Tpn Company"
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+          <TextInput
+          style={styles.input}
+          placeholder="Tpn charge"
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+          <TextInput
+          style={styles.input}
+          placeholder="Remarks"
           onChangeText={text => setConfirmPassword(text)}
           value={confirmPassword}
           secureTextEntry={true}
