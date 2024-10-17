@@ -9,12 +9,38 @@ import Add from './Add';
 import IssueNote from './IssueNote';
 import Navbar from './Navbar';
 import RetrieveNote from './RetrieveNote';
+import SignatureScreen from './SignatureScreen';
+import ElectronicSignature from './ElectronicSignature';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// 为 IssueNote 页面创建一个堆栈，包含 SignatureScreen
+const IssueNoteStack = createStackNavigator();
+
+function IssueNoteStackScreen({ route }) {
+  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
+  return (
+    <IssueNoteStack.Navigator>
+
+      <IssueNoteStack.Screen 
+      name="IssueNote" 
+      component={IssueNote} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID }} 
+      options={{ headerShown: false }}
+      />
+
+      <IssueNoteStack.Screen 
+        name="ElectronicSignature" 
+        component={ElectronicSignature} 
+        options={{ headerShown: false }}
+      />
+    </IssueNoteStack.Navigator>
+  );
+}
+
 function BottomTabNavigator({ route }) {
-  const { token, userName, userNumber, expiresIn } = route.params || {}; 
+  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {}; 
 
   return (
     <Tab.Navigator initialRouteName="Home">
@@ -25,13 +51,15 @@ function BottomTabNavigator({ route }) {
         options={{ title: 'Persona' }}
       />
       <Tab.Screen
-        name="IssueNote"
-        component={IssueNote}
+        name="IssueNoteTab"
+        component={IssueNoteStackScreen}
+        initialParams={{ token, customer_ID }}
         options={{ title: 'Issue Notes' }}
       />
       <Tab.Screen name="RetrieveNote" 
       component={RetrieveNote} 
-      options={{ title: 'Retrieve Notes' }} />
+      options={{ title: 'Retrieve Notes' }} 
+      />
     </Tab.Navigator>
   );
 }

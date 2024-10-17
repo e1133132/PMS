@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity,Button } from 'react-native';
 import axios from 'axios';
+import SignatureScreen from './SignatureScreen';
 
-export default function IssueNote({ route }) {
+export default function IssueNote({ route,navigation }) {
   const { token, customer_ID } = route.params;
   const [hireOrderData, setHireOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedHireOrderId, setSelectedHireOrderId] = useState(null);
   const [issueNotesData, setIssueNotesData] = useState({});
-
+  
+  const handleSignPress = () => {
+    //navigation.navigate('SignatureScreen');
+    navigation.navigate('ElectronicSignature');
+  };
   useEffect(() => {
     const fetchHireOrders = async () => {
       try {
@@ -97,6 +102,7 @@ export default function IssueNote({ route }) {
                 <Text style={styles.info}>Tpn Company: {issueNotesData[item.Hire_Order_ID].Tpn_Company}</Text>
                 <Text style={styles.info}>Tpn Charge: {issueNotesData[item.Hire_Order_ID].Tpn_Charge || 'NULL'}</Text>
                 <Text style={styles.info}>Remarks: {issueNotesData[item.Hire_Order_ID].Remarks || 'NULL'}</Text>
+                <Button title="Sign" onPress={handleSignPress} />
               </View>
             ) : (
               selectedHireOrderId === item.Hire_Order_ID && <Text style={styles.info}>No issue note data for this hire order.</Text>
