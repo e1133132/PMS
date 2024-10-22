@@ -22,7 +22,6 @@ function IssueNoteStackScreen({ route }) {
   const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
   return (
     <IssueNoteStack.Navigator>
-
       <IssueNoteStack.Screen 
       name="IssueNote" 
       component={IssueNote} 
@@ -54,7 +53,7 @@ function BottomTabNavigator({ route }) {
         name="IssueNoteTab"
         component={IssueNoteStackScreen}
         initialParams={{ token, customer_ID }}
-        options={{ title: 'Issue Notes' }}
+        options={{ title: 'Hire order & Issue Notes' }}
       />
       <Tab.Screen name="RetrieveNote" 
       component={RetrieveNote} 
@@ -71,7 +70,8 @@ export default function AppNavigator() {
         <Stack.Screen 
           name="Login" 
           component={Login} 
-          options={{ headerTitle: (props) => <Navbar {...props} /> }}
+          //options={{ headerTitle: (props) => <Navbar {...props} /> }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="HomeTabs" 

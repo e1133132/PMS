@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ImageBackground } from 'react-native';
 import axios from 'axios';
 
 export default function Home({ route,navigation }) {
@@ -16,16 +16,18 @@ export default function Home({ route,navigation }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         
+
         // select
         const customer = response.data.find((customer) => customer.Customer_Name === userName);
-
+        //navigation.navigate('ElectronicSignature', { customer_ID: customer.customer_ID, token });
         // update user data
         if (customer) {
           setUserData(customer);
-          navigation.navigate('IssueNote', { customer_ID: customer.customer_ID, token });
+          //navigation.navigate('IssueNote', { customer_ID: customer.customer_ID, token });
+          navigation.navigate('IssueNoteTab', { customer_ID: customer.customer_ID, token });
           navigation.navigate('RetrieveNote', { customer_ID: customer.customer_ID, token });
-          navigation.navigate('IssueNoteStack', { screen: 'IssueNote', params: { customer_ID: customer.customer_ID, token } });
-          console.log('Customer ID:', customer.customer_ID);
+          //navigation.navigate('IssueNoteStack', { screen: 'IssueNote', params: { customer_ID: customer.customer_ID, token } });
+         // console.log('Customer ID:', customer.customer_ID);
         } else {
           console.warn('No customer data found for the provided username');
         }
@@ -48,24 +50,40 @@ export default function Home({ route,navigation }) {
   }
 
   return (
+<ImageBackground source={require('../assets/wood.jpg')} style={styles.background} >
     <View style={styles.container}>
+
       <Text style={styles.header}>Customer Information</Text>
       {userData ? (
-        <View>
-          <Text style={styles.info}>Customer ID: {userData.customer_ID}</Text>
-          <Text style={styles.info}>Status: {userData.status}</Text>
-          <Text style={styles.info}>Business Type: {userData.Business_Type}</Text>
-          <Text style={styles.info}>Country: {userData.Country}</Text>
-          <Text style={styles.info}>Currency: {userData.Currency}</Text>
-          <Text style={styles.info}>GST: {userData.GST}</Text>
-          <Text style={styles.info}>Account Balance: {userData.Account_Balance !== null ? userData.Account_Balance : 'NULL'}</Text>
-          {/* Add other fields as needed */}
+        <View style={styles.card}>
+          <Text style={styles.infoTitle}>Customer ID</Text>
+          <Text style={styles.infoValue}>{userData.customer_ID}</Text>
+
+          <Text style={styles.infoTitle}>Status</Text>
+          <Text style={styles.infoValue}>{userData.status}</Text>
+
+          <Text style={styles.infoTitle}>Business Type</Text>
+          <Text style={styles.infoValue}>{userData.Business_Type}</Text>
+
+          <Text style={styles.infoTitle}>Country</Text>
+          <Text style={styles.infoValue}>{userData.Country}</Text>
+
+          <Text style={styles.infoTitle}>Currency</Text>
+          <Text style={styles.infoValue}>{userData.Currency}</Text>
+
+          <Text style={styles.infoTitle}>GST</Text>
+          <Text style={styles.infoValue}>{userData.GST}</Text>
+
+          <Text style={styles.infoTitle}>Account Balance</Text>
+          <Text style={styles.infoValue}>
+            {userData.Account_Balance !== null ? userData.Account_Balance : 'NULL'}
+          </Text>
         </View>
       ) : (
-        <Text style={styles.info}>No data available for this username.</Text>
+        <Text style={styles.noData}>No data available for this username.</Text>
       )}
-
     </View>
+    </ImageBackground>
   );
 }
 
@@ -73,20 +91,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FDF7E4',
+    backgroundColor: '#F5F5F5',
   },
-  loadingContainer: {
+  background: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    resizeMode: 'cover', 
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
+    textAlign: 'center',
   },
-  info: {
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#555',
+    marginBottom: 2,
+  },
+  infoValue: {
     fontSize: 18,
-    marginVertical: 5,
+    color: '#000',
+    marginBottom: 10,
+  },
+  noData: {
+    fontSize: 18,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

@@ -2,12 +2,14 @@ import React, { useRef, useState } from 'react';
 import { View, Button, Text, StyleSheet, Alert } from 'react-native';
 import Signature from 'react-native-signature-canvas';
 
-export default function ElectronicSignature({navigation}) {
+export default function ElectronicSignature({route,navigation}) {
+  const { token, customer_ID } = route.params;
   const [signature, setSignature] = useState(null);
   const ref = useRef();
 
   const handleSignature = (sig) => {
     setSignature(sig); // save
+    console.log(sig);
     Alert.alert('Sign successfully', 'Your signature have been saved');
   };
 

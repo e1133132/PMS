@@ -12,14 +12,17 @@ export default function IssueNote({ route,navigation }) {
   
   const handleSignPress = () => {
     //navigation.navigate('SignatureScreen');
-    navigation.navigate('ElectronicSignature');
+    navigation.navigate('ElectronicSignature', {
+      token: token,
+      customer_ID: customer_ID,
+    });
   };
+  
   useEffect(() => {
+      //  console.log('Token:', token);
+        console.log('Customer ID:', customer_ID);
     const fetchHireOrders = async () => {
       try {
-    //    console.log('Token:', token);
-    //    console.log('Customer ID:', customer_ID);
-
         const hireOrderResponse = await axios.get(
           `http://172.20.10.9:85/api/SG/Hire_Order/${customer_ID}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FDF7E4',
+    backgroundColor: '#F5F5F5',
   },
   loadingContainer: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 
 export default function Login({ navigation }) {
@@ -19,7 +19,7 @@ export default function Login({ navigation }) {
         const { access_token, userName, userNumber, expires_in } = response.data;
         
         navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in });
-        
+        //navigation.navigate('IssueNote', { token: access_token, userName, userNumber, expiresIn: expires_in });
         
         setUsername('');
         setPassword('');
@@ -35,6 +35,9 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
+    <Image source={require('../assets/LHT.png')} style={styles.logo} />
+    <Text style={styles.title1}>Pallet Management System</Text>
+    <Text style={styles.title2}>企业管理系统</Text>
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -62,14 +65,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FDF7E4',
+    backgroundColor: '#FFFFFF',
     padding: 20,
   },
   title: {
     fontSize: 30,
+    marginTop: 80,
     marginBottom: 30,
     fontWeight: 'bold',
     color: '#333',
+  },
+  title1: {
+    fontSize: 20,
+    //marginBottom: 20,
+    marginTop: 10,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  title2: {
+    fontSize: 20,
+    marginBottom: 20,
+    //marginTop: 10,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  logo: {
+    width: 170,
+    height: 100,
+    alignSelf: 'center',
+    marginTop: -200,
   },
   input: {
     height: 40,
