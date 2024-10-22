@@ -10,10 +10,11 @@ export default function IssueNote({ route,navigation }) {
   const [selectedHireOrderId, setSelectedHireOrderId] = useState(null);
   const [issueNotesData, setIssueNotesData] = useState({});
   
-  const handleSignPress = () => {
+  const handleSignPress = (issueNoteId) => {
     //navigation.navigate('SignatureScreen');
     navigation.navigate('ElectronicSignature', {
       token: token,
+      issueNoteId: issueNoteId,
       customer_ID: customer_ID,
     });
   };
@@ -96,6 +97,7 @@ export default function IssueNote({ route,navigation }) {
             
             {selectedHireOrderId === item.Hire_Order_ID && issueNotesData[item.Hire_Order_ID] ? (
               <View style={styles.issueNoteContainer}>
+                 <Text style={styles.info}>Issue Note No: {issueNotesData[item.Hire_Order_ID].Issue_Note_ID}</Text>
                 <Text style={styles.info}>Issue Note No: {issueNotesData[item.Hire_Order_ID].Issue_Note_No}</Text>
                 <Text style={styles.info}>Issue Qty: {issueNotesData[item.Hire_Order_ID].Issue_Qty}</Text>
                 <Text style={styles.info}>Issue Date: {issueNotesData[item.Hire_Order_ID].Issue_Date}</Text>
@@ -105,7 +107,7 @@ export default function IssueNote({ route,navigation }) {
                 <Text style={styles.info}>Tpn Company: {issueNotesData[item.Hire_Order_ID].Tpn_Company}</Text>
                 <Text style={styles.info}>Tpn Charge: {issueNotesData[item.Hire_Order_ID].Tpn_Charge || 'NULL'}</Text>
                 <Text style={styles.info}>Remarks: {issueNotesData[item.Hire_Order_ID].Remarks || 'NULL'}</Text>
-                <Button title="Sign" onPress={handleSignPress} />
+                <Button title="Sign" onPress={() => handleSignPress(issueNotesData[item.Hire_Order_ID].Issue_Note_ID)} />
               </View>
             ) : (
               selectedHireOrderId === item.Hire_Order_ID && <Text style={styles.info}>No issue note data for this hire order.</Text>
