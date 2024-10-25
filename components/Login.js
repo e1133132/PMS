@@ -1,26 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
 
-  const handleLogin = async () => {
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
     try {
-      const data = `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+      const token = await AsyncStorage.getItem('token');
+      const savedUsername = await AsyncStorage.getItem('username');
+      const savedPassword = await AsyncStorage.getItem('password');
+  
+      if (token && savedUsername && savedPassword) {
+        await handleLogin(savedUsername, savedPassword);
+      } else { 
+        navigation.navigate('Login');
+      }
+    } catch (e) {
+      console.error('Error checking login status', e);
+    }
+  };
+  
+ 
+  const handleLogin = async (savedUsername, savedPassword) => {
+    try {
+      const usernameToUse = savedUsername || username;
+      const passwordToUse = savedPassword || password;
+  
+      const data = `grant_type=password&username=${encodeURIComponent(usernameToUse)}&password=${encodeURIComponent(passwordToUse)}`;
       const response = await axios.post('http://172.20.10.9:85/token', data, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
   
       if (response.data && response.data.access_token) {
-        
         const { access_token, userName, userNumber, expires_in } = response.data;
-        
+  
+       
+        await AsyncStorage.setItem('token', access_token);
+        await AsyncStorage.setItem('username', usernameToUse);
+        await AsyncStorage.setItem('password', passwordToUse);
         navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in });
-        //navigation.navigate('IssueNote', { token: access_token, userName, userNumber, expiresIn: expires_in });
-        
+  
         setUsername('');
         setPassword('');
         setErrMsg('');
@@ -32,13 +59,14 @@ export default function Login({ navigation }) {
       setErrMsg('Invalid username or password');
     }
   };
+  
 
   return (
     <View style={styles.container}>
     <Image source={require('../assets/LHT.png')} style={styles.logo} />
     <Text style={styles.title1}>Pallet Management System</Text>
     <Text style={styles.title2}>企业管理系统</Text>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Login Here</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -52,8 +80,8 @@ export default function Login({ navigation }) {
         value={password}
         secureTextEntry={true}
       />
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity style={styles.loginButton} onPress={() => handleLogin()}>
+        <Text style={styles.buttonText}>Authenticate</Text>
       </TouchableOpacity>
       <Text style={styles.error}>{errMsg}</Text>
     </View>

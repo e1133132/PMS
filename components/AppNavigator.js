@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { Button} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,14 +10,30 @@ import Add from './Add';
 import IssueNote from './IssueNote';
 import Navbar from './Navbar';
 import RetrieveNote from './RetrieveNote';
-import SignatureScreen from './SignatureScreen';
 import ElectronicSignature from './ElectronicSignature';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 为 IssueNote 页面创建一个堆栈，包含 SignatureScreen
+// create a stack for IssueNote，including SignatureScreen
 const IssueNoteStack = createStackNavigator();
+
+const logout = async (navigation) => {
+  try {
+    // remove token information
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('password');
+    await AsyncStorage.removeItem('username');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }], // reset navigation stack
+    });
+  } catch (e) {
+    console.error('Error logging out', e);
+  }
+};
 
 function IssueNoteStackScreen({ route }) {
   const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
@@ -47,23 +64,53 @@ function BottomTabNavigator({ route }) {
         name="Home"
         component={Home}
         initialParams={{ token, userName, userNumber, expiresIn }}
-        options={{ title: 'Persona' }}
+        options={({ navigation }) => ({
+          title: 'Profile',
+          headerRight: () => (
+            <Button
+              onPress={() => logout(navigation)}
+              title="Log Out"
+              color="#000"
+            />
+          ),
+        })}
       />
       <Tab.Screen
         name="IssueNoteTab"
         component={IssueNoteStackScreen}
         initialParams={{ token, customer_ID }}
-        options={{ title: 'Hire order & Issue Notes' }}
+        options={({ navigation }) => ({
+          title: 'Hire order & Issue Notes',
+          headerRight: () => (
+            <Button
+              onPress={() => logout(navigation)}
+              title="Log Out"
+              color="#000"
+            />
+          ),
+        })}
       />
       <Tab.Screen name="RetrieveNote" 
       component={RetrieveNote} 
-      options={{ title: 'Retrieve Notes' }} 
+      options={({ navigation }) => ({
+        title: 'Retrieve Notes',
+        headerRight: () => (
+          <Button
+            onPress={() => logout(navigation)}
+            title="Log Out"
+            color="#000"
+          />
+        ),
+      })}
       />
     </Tab.Navigator>
   );
 }
 
 export default function AppNavigator() {
+  // useEffect(() => {
+  //   SplashScreen.hide();  
+  // }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">

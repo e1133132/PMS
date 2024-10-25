@@ -113,11 +113,11 @@ export default function ElectronicSignature({route,navigation}) {
         <Button title="Back to Issue Note" onPress={handleBack} />
          </View>
       
-      {signature && (
+      {/* {signature && (
         <View style={styles.signatureContainer}>
           <Button title="Clear signature" onPress={handleClear} />
         </View>
-      )}
+      )} */}
     </View>
   );
 }
