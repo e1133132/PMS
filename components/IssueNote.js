@@ -14,6 +14,7 @@ export default function IssueNote({ route, navigation }) {
   const [dateFilter, setDateFilter] = useState(null); // save month
   const [showDatePicker, setShowDatePicker] = useState(false); // contrl show of date selector
   const [expandedItems, setExpandedItems] = useState({}); 
+  const [expandedIssue, setExpandedIssue] = useState({}); 
 
   // date changer
   const onDateChange = (event, selectedDate) => {
@@ -36,6 +37,15 @@ export default function IssueNote({ route, navigation }) {
   const toggleExpand = (id) => {
     setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const toggleExpandIssue = (hireOrderId, issueNoteId) => {
+    const key = `${hireOrderId}-${issueNoteId}`;
+    setExpandedIssue(prevState => ({
+      ...prevState,
+      [key]: !prevState[key], // 切换当前 Issue Note 的状态
+    }));
+  };
+
 
   useEffect(() => {
     const fetchHireOrders = async () => {
@@ -67,7 +77,7 @@ export default function IssueNote({ route, navigation }) {
       setSelectedHireOrderId(hireOrderId);
       if (!issueNotesData[hireOrderId]) {
         try {
-          const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${hireOrderId}`, {
+          const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithHire/${customer_ID}/${hireOrderId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
          // console.log(`Fetching URL: http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTables/${customer_ID}/${hireOrderId}`);
@@ -164,45 +174,43 @@ export default function IssueNote({ route, navigation }) {
              {isExpanded ? 'Show Less' : 'Show More...'}
            </Text>
          </TouchableOpacity>
+
             {selectedHireOrderId === item.Hire_Order_ID && issueNotesData[item.Hire_Order_ID] ? (
-            //     <FlatList
-            //     data={issueNotesData[item.Hire_Order_ID]} // Iterate through the list of issue notes
-            //     keyExtractor={(issueNoteItem) => issueNoteItem.Issue_Note_ID.toString()}
-            //     renderItem={({ item: issueNoteItem }) => (
-            //       <View style={styles.issueNoteContainer}>
-            //         <Text style={styles.info}>Issue Note ID: {issueNoteItem.Issue_Note_ID}</Text>
-            //         <Text style={styles.info}>Issue Note No: {issueNoteItem.Issue_Note_No}</Text>
-            //         <Text style={styles.info}>Issue Qty: {issueNoteItem.Issue_Qty}</Text>
-            //         <Text style={styles.info}>Issue Date: {issueNoteItem.Issue_Date}</Text>
-            //         <Text style={styles.info}>Vehicle No: {issueNoteItem.Vehicle_No || 'NULL'}</Text>
-            //         <Text style={styles.info}>Driver: {issueNoteItem.Driver || 'NULL'}</Text>
-            //         <Text style={styles.info}>Driver IC: {issueNoteItem.Driver_IC || 'NULL'}</Text>
-            //         <Text style={styles.info}>Tpn Company: {issueNoteItem.Tpn_Company}</Text>
-            //         <Text style={styles.info}>Tpn Charge: {issueNoteItem.Tpn_Charge || 'NULL'}</Text>
-            //         <Text style={styles.info}>Remarks: {issueNoteItem.Remarks || 'NULL'}</Text>
-            //         <Button title="Sign" onPress={() => handleSignPress(issueNoteItem.Issue_Note_ID)} />
-            //       </View>
-            //     )}
-            //   />
-            // ) : (
-            //   selectedHireOrderId === item.Hire_Order_ID && <Text style={styles.info}>No issue note data for this hire order.</Text>
-            // )}
-            <View style={styles.issueNoteContainer}>
-                <Text style={styles.info}>Issue Note No: {issueNotesData[item.Hire_Order_ID].Issue_Note_ID}</Text>
-                <Text style={styles.info}>Issue Note No: {issueNotesData[item.Hire_Order_ID].Issue_Note_No}</Text>
-                <Text style={styles.info}>Issue Qty: {issueNotesData[item.Hire_Order_ID].Issue_Qty}</Text>
-                <Text style={styles.info}>Issue Date: {issueNotesData[item.Hire_Order_ID].Issue_Date}</Text>
-                <Text style={styles.info}>Vehicle No: {issueNotesData[item.Hire_Order_ID].Vehicle_No || 'NULL'}</Text>
-                <Text style={styles.info}>Driver: {issueNotesData[item.Hire_Order_ID].Driver || 'NULL'}</Text>
-                <Text style={styles.info}>Driver IC: {issueNotesData[item.Hire_Order_ID].Driver_IC || 'NULL'}</Text>
-                <Text style={styles.info}>Tpn Company: {issueNotesData[item.Hire_Order_ID].Tpn_Company}</Text>
-                <Text style={styles.info}>Tpn Charge: {issueNotesData[item.Hire_Order_ID].Tpn_Charge || 'NULL'}</Text>
-                <Text style={styles.info}>Remarks: {issueNotesData[item.Hire_Order_ID].Remarks || 'NULL'}</Text>
-                <Button title="Sign" onPress={() => handleSignPress(issueNotesData[item.Hire_Order_ID].Issue_Note_ID)} />
-              </View>
+                <FlatList
+                data={issueNotesData[item.Hire_Order_ID]} // Iterate through the list of issue notes
+                keyExtractor={(issueNoteItem) => issueNoteItem.Issue_Note_ID.toString()}
+                renderItem={({ item: issueNoteItem }) => {
+                  const isIssueExpanded=expandedIssue[`${item.Hire_Order_ID}-${issueNoteItem.Issue_Note_ID}`];
+               return(
+                  <View style={styles.issueNoteContainer}>
+                    <Text style={styles.info}>Issue Note ID: {issueNoteItem.Issue_Note_ID}</Text>
+                    {isIssueExpanded &&(
+                    <>
+                    <Text style={styles.info}>Issue Note No: {issueNoteItem.Issue_Note_No}</Text>
+                    <Text style={styles.info}>Issue Qty: {issueNoteItem.Issue_Qty}</Text>
+                    <Text style={styles.info}>Issue Date: {issueNoteItem.Issue_Date}</Text>
+                    <Text style={styles.info}>Vehicle No: {issueNoteItem.Vehicle_No || 'NULL'}</Text>
+                    <Text style={styles.info}>Driver: {issueNoteItem.Driver || 'NULL'}</Text>
+                    <Text style={styles.info}>Driver IC: {issueNoteItem.Driver_IC || 'NULL'}</Text>
+                    <Text style={styles.info}>Tpn Company: {issueNoteItem.Tpn_Company}</Text>
+                    <Text style={styles.info}>Tpn Charge: {issueNoteItem.Tpn_Charge || 'NULL'}</Text>
+                    <Text style={styles.info}>Remarks: {issueNoteItem.Remarks || 'NULL'}</Text>
+                    </>
+                    )}
+                 <TouchableOpacity onPress={() => toggleExpandIssue(item.Hire_Order_ID, issueNoteItem.Issue_Note_ID)}>
+                 <Text style={styles.expandText}>
+                   {isIssueExpanded ? 'Show Less' : 'Show More...'}
+                 </Text>
+               </TouchableOpacity>
+                    <Button title="Sign" onPress={() => handleSignPress(issueNoteItem.Issue_Note_ID)} />                
+               </View>
+               );
+                }}
+              />
             ) : (
               selectedHireOrderId === item.Hire_Order_ID && <Text style={styles.info}>No issue note data for this hire order.</Text>
             )}
+           
           </TouchableOpacity>
         );
       }}

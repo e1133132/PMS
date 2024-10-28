@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity,ActivityIndicator, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,6 +7,7 @@ export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
@@ -31,6 +32,7 @@ export default function Login({ navigation }) {
  
   const handleLogin = async (savedUsername, savedPassword) => {
     try {
+      setIsLoading(true);
       const usernameToUse = savedUsername || username;
       const passwordToUse = savedPassword || password;
   
@@ -80,8 +82,14 @@ export default function Login({ navigation }) {
         value={password}
         secureTextEntry={true}
       />
-      <TouchableOpacity style={styles.loginButton} onPress={() => handleLogin()}>
+      <TouchableOpacity style={styles.loginButton} 
+      onPress={() => handleLogin()}
+      disabled={isLoading}>
+        {isLoading ? (
+        <ActivityIndicator size="small" color="#FFFFFF" />
+      ) : (
         <Text style={styles.buttonText}>Authenticate</Text>
+      )}
       </TouchableOpacity>
       <Text style={styles.error}>{errMsg}</Text>
     </View>
