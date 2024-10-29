@@ -42,7 +42,7 @@ export default function IssueNote({ route, navigation }) {
     const key = `${hireOrderId}-${issueNoteId}`;
     setExpandedIssue(prevState => ({
       ...prevState,
-      [key]: !prevState[key], // 切换当前 Issue Note 的状态
+      [key]: !prevState[key], // change back to Issue Note status
     }));
   };
 

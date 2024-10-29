@@ -54,11 +54,13 @@ export default function Login({ navigation }) {
         setPassword('');
         setErrMsg('');
       } else {
+        setIsLoading(false);
         setErrMsg('Login failed. Please check your credentials.');
       }
     } catch (error) {
       console.error("Error response:", error.response?.data);
-      setErrMsg('Invalid username or password');
+      setIsLoading(false);
+      setErrMsg('Error username or password');
     }
   };
   
