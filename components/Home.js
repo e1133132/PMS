@@ -22,12 +22,10 @@ export default function Home({ route,navigation }) {
         //navigation.navigate('ElectronicSignature', { customer_ID: customer.customer_ID, token });
         // update user data
         if (customer) {
-          setUserData(customer);
-          //navigation.navigate('IssueNote', { customer_ID: customer.customer_ID, token });
+          setUserData(customer);  
           navigation.navigate('IssueNoteTab', { customer_ID: customer.customer_ID, token });
           navigation.navigate('RetrieveNote', { customer_ID: customer.customer_ID, token });
-          //navigation.navigate('IssueNoteStack', { screen: 'IssueNote', params: { customer_ID: customer.customer_ID, token } });
-         // console.log('Customer ID:', customer.customer_ID);
+         
         } else {
           console.warn('No customer data found for the provided username');
         }

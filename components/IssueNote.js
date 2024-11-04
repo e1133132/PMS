@@ -80,11 +80,9 @@ export default function IssueNote({ route, navigation }) {
           const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithHire/${customer_ID}/${hireOrderId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-         // console.log(`Fetching URL: http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTables/${customer_ID}/${hireOrderId}`);
           setIssueNotesData(prevState => ({ ...prevState, [hireOrderId]: response.data }));
         } catch (error) {
           if (error.response) {
-           // console.log(`Fetching URL: http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTables/${customer_ID}/${hireOrderId}`);
             console.error(`Error fetching issue note: ${error.response.status} - ${error.response.data}`);
           } else {
             console.error(`Error fetching issue note: ${error.message}`);

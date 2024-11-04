@@ -1,6 +1,13 @@
 import React from 'react';
-import AppNavigator from './components/AppNavigator'; // 根据实际路径调整
+import AppNavigator from './components/AppNavigator'; 
+import Toast from 'react-native-toast-message';
 
 export default function App() {
-  return <AppNavigator />;
+  return  (
+    <>
+      <AppNavigator />
+      
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+    </>
+  );
 }
