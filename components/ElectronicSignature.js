@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { View, Button, Text, StyleSheet, Alert } from 'react-native';
+import React, { useRef, useState,useEffect } from 'react';
+import { View, Button, Text, StyleSheet, Alert,Image,ScrollView } from 'react-native';
 import Signature from 'react-native-signature-canvas';
 import pako from 'pako';
 import * as FileSystem from 'expo-file-system';
@@ -7,13 +7,22 @@ import * as Sharing from 'expo-sharing';
 import axios from 'axios';
 import { Buffer } from 'buffer'; 
 import Toast from 'react-native-toast-message';
+import ImageUploader from './TakePhoto';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function ElectronicSignature({route,navigation}) {
   const { token, customer_ID,issueNoteId } = route.params;
-
   const [signature, setSignature] = useState(null);
   const ref = useRef();
   const [compressedSig, setCompressedSig] = useState(null);
+  const [Issuenote,setIssuenote] = useState({});
+  const [qrCodeUri, setQrCodeUri] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchQRCode();
+  }, [ issueNoteId, token]);
+
 
   const prepareSignatureBase64 = (data) => {
     if (!data) {
@@ -22,6 +31,81 @@ export default function ElectronicSignature({route,navigation}) {
   }
     const base64Signature = data.includes(",") ? data.split(',')[1] : data;
     return base64Signature;
+};
+
+const fetchIssueNote = async () => {
+      try {
+        const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const i=response.data;
+        setIssuenote(i);
+     //   QRCodeImage(i);
+      } catch (error) {
+        if (error.response) {
+          console.error(`Error fetching issue note: ${error.response.status} - ${error.response.data}`);
+        } else {
+          console.error(`Error fetching issue note: ${error.message}`);
+        }
+    }
+};
+
+// const QRCodeImage = () => {
+//   fetchIssueNote();
+//   const qrCodeData = JSON.stringify(Issuenote);
+
+//   return (
+//       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//           <Text>Scan to view info of issueNote</Text>
+//           <QRCode 
+//               value={qrCodeData} 
+//               size={200} 
+//               backgroundColor="white"
+//               color="black"
+//           />
+//       </View>
+//   );
+// };
+
+// const fetchQRCodeWithImage = async () => {
+//   try {
+//       const response = await axios.post(`http://172.20.10.9:85/api/SG/Issue_Note/${customer_ID}`, Issuenote,{
+//           headers: { Authorization: `Bearer ${token}` },
+//       });
+      
+//       const base64Image = `data:image/png;base64,${Buffer.from(response.data, 'binary').toString('base64')}`;
+//       setQrCodeUri(base64Image);
+//   } catch (error) {
+//       if (error.response) {
+//           console.error(`Error fetching QR code: ${error.response.status} - ${error.response.data}`);
+//       } else {
+//           console.error(`Error fetching QR code: ${error.message}`);
+//       }
+//       Alert.alert("Error", "Failed to fetch QR code");
+//   } finally {
+//       setLoading(false);
+//   }
+// };
+
+const fetchQRCode = async () => {
+  try {
+      const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}/qrcode`, {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'arraybuffer', 
+      });
+      
+      const base64Image = `data:image/png;base64,${Buffer.from(response.data, 'binary').toString('base64')}`;
+      setQrCodeUri(base64Image);
+  } catch (error) {
+      if (error.response) {
+          console.error(`Error fetching QR code: ${error.response.status} - ${error.response.data}`);
+      } else {
+          console.error(`Error fetching QR code: ${error.message}`);
+      }
+      Alert.alert("Error", "Failed to fetch QR code");
+  } finally {
+      setLoading(false);
+  }
 };
 
   const downloadPdf = async (pdfBase64) => {
@@ -49,8 +133,7 @@ export default function ElectronicSignature({route,navigation}) {
       const pdfResponse = await axios.get(
         `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${issueNoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
-      );
-    
+      ); 
       //const pdfData = pdfResponse.data;
       //console.log("Fetched PDF Data:", pdfData);
       const pdfData = {
@@ -62,8 +145,8 @@ export default function ElectronicSignature({route,navigation}) {
         headers: {  Authorization: `Bearer ${token}`,'Content-Type': 'application/x-www-form-urlencoded' },
         responseType: 'arraybuffer',
       });
-       console.log(pdf);
-       console.log(token);
+      // console.log(pdf);
+      // console.log(token);
       if (pdf.status === 200 && pdf.data) {
         const pdfBlob = pdf.data; 
         const pdfBase64 = Buffer.from(pdfBlob, 'binary').toString('base64');
@@ -150,38 +233,44 @@ export default function ElectronicSignature({route,navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Digital Sign</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.titleContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Digital Sign</Text>
+          <ImageUploader token={token} issueNoteId={issueNoteId}/>
+        </View>
+      </View>
+  
       <Signature
-  ref={ref}
-  onOK={handleSignature}
-  onEmpty={() => Alert.alert("Please sign above")}
-  descriptionText="Sign here"
-  clearText="Reset"
-  confirmText="Finish"
-  autoClear={false}
-  backgroundColor="#FFF"
-  minWidth={1}  
-  maxWidth={3}  
-  canvasWidth={150}  
-  canvasHeight={50}  
-  webStyle={`
-          .m-signature-pad--footer {
-            display: flex;
-            justify-content: space-between;
-          }
+        ref={ref}
+        onOK={handleSignature}
+        onEmpty={() => Alert.alert("Please sign above")}
+        descriptionText="Sign here"
+        clearText="Reset"
+        confirmText="Finish"
+        autoClear={false}
+        backgroundColor="#FFF"
+        minWidth={1}
+        maxWidth={3}
+        canvasWidth={300}
+        canvasHeight={200}
+        webStyle={`
           .m-signature-pad--footer .button {
-            color: black; 
-            font-size: 16px; 
-            font-weight: bold;
+            display: block;
+            font-size: 15px;
+            margin-top: 0px;
           }
-        `}/>
-
-         <View style={styles.backButtonContainer}>
+        `}
+      />
+  
+  <View style={{ flex: -1, justifyContent: 'center', alignItems: 'center',marginTop: 30 }}>
+        <Image source={{ uri: qrCodeUri }} style={{ width: 200, height: 200 }} />
+      </View>
+  
+      <View style={styles.backButtonContainer}>
         <Button title="Back to Issue Note" onPress={handleBack} />
-         </View>
-      
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -191,10 +280,26 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f5f5f5',
   },
+  signatureContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     textAlign: 'center',
-    marginVertical: 20,
+    fontWeight: 'bold',
+    flex: 1, 
+  },
+  titleContainer: {                   
+    alignItems: 'center',       
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // space between camera and title
+    paddingTop: 0,
+    paddingHorizontal: 20, 
+    height: 60,
   },
   signatureContainer: {
     marginTop: 20,
