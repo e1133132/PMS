@@ -13,6 +13,7 @@ import RetrieveNote from './RetrieveNote';
 import ElectronicSignature from './ElectronicSignature';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,7 +60,27 @@ function BottomTabNavigator({ route }) {
   const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {}; 
 
   return (
-    <Tab.Navigator initialRouteName="Home">
+    <Tab.Navigator initialRouteName="Home"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          // 根据 Tab 的名称设置不同的图标
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'IssueNoteTab') {
+            iconName = focused ? 'file-tray-full' : 'file-tray-full-outline';
+          } else if (route.name === 'RetrieveNote') {
+            iconName = focused ? 'hand-right' : 'hand-right-outline';
+          }
+
+          // 返回图标
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#007AFF',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
       <Tab.Screen
         name="Home"
         component={Home}

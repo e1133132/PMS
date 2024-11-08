@@ -13,6 +13,7 @@ import QRCode from 'react-native-qrcode-svg';
 export default function ElectronicSignature({route,navigation}) {
   const { token, customer_ID,issueNoteId } = route.params;
   const [signature, setSignature] = useState(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const ref = useRef();
   const [compressedSig, setCompressedSig] = useState(null);
   const [Issuenote,setIssuenote] = useState({});
@@ -33,58 +34,21 @@ export default function ElectronicSignature({route,navigation}) {
     return base64Signature;
 };
 
-const fetchIssueNote = async () => {
-      try {
-        const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const i=response.data;
-        setIssuenote(i);
-     //   QRCodeImage(i);
-      } catch (error) {
-        if (error.response) {
-          console.error(`Error fetching issue note: ${error.response.status} - ${error.response.data}`);
-        } else {
-          console.error(`Error fetching issue note: ${error.message}`);
-        }
-    }
-};
-
-// const QRCodeImage = () => {
-//   fetchIssueNote();
-//   const qrCodeData = JSON.stringify(Issuenote);
-
-//   return (
-//       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//           <Text>Scan to view info of issueNote</Text>
-//           <QRCode 
-//               value={qrCodeData} 
-//               size={200} 
-//               backgroundColor="white"
-//               color="black"
-//           />
-//       </View>
-//   );
-// };
-
-// const fetchQRCodeWithImage = async () => {
-//   try {
-//       const response = await axios.post(`http://172.20.10.9:85/api/SG/Issue_Note/${customer_ID}`, Issuenote,{
+// const fetchIssueNote = async () => {
+//       try {
+//         const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}`, {
 //           headers: { Authorization: `Bearer ${token}` },
-//       });
-      
-//       const base64Image = `data:image/png;base64,${Buffer.from(response.data, 'binary').toString('base64')}`;
-//       setQrCodeUri(base64Image);
-//   } catch (error) {
-//       if (error.response) {
-//           console.error(`Error fetching QR code: ${error.response.status} - ${error.response.data}`);
-//       } else {
-//           console.error(`Error fetching QR code: ${error.message}`);
-//       }
-//       Alert.alert("Error", "Failed to fetch QR code");
-//   } finally {
-//       setLoading(false);
-//   }
+//         });
+//         const i=response.data;
+//         setIssuenote(i);
+//      //   QRCodeImage(i);
+//       } catch (error) {
+//         if (error.response) {
+//           console.error(`Error fetching issue note: ${error.response.status} - ${error.response.data}`);
+//         } else {
+//           console.error(`Error fetching issue note: ${error.message}`);
+//         }
+//     }
 // };
 
 const fetchQRCode = async () => {
@@ -110,8 +74,30 @@ const fetchQRCode = async () => {
 
   const downloadPdf = async (pdfBase64) => {
     const fileUri = FileSystem.documentDirectory + 'IssueNote.pdf';
-  
-    
+    try {
+      const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${issueNoteId}`;
+      const response = await axios.post(url,
+        {
+          //fileName: 'document.pdf',
+          fileData: pdfBase64,
+        },
+        { 
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+      //  Alert.alert('PDF upload successfully');
+      } else {
+        Alert.alert('PDF upload fail');
+      }
+    } catch (error) {
+      console.error('upload pdf fail:', error);
+      Alert.alert('upload pdf fail', error.message);
+    }
     await FileSystem.writeAsStringAsync(fileUri,pdfBase64, {
       encoding: FileSystem.EncodingType.Base64,
     });
@@ -164,11 +150,28 @@ const fetchQRCode = async () => {
       } else {
         console.error("Error in request setup:", error.message); 
       }
-      const errorDetails = JSON.stringify(error, Object.getOwnPropertyNames(error));
- // console.error("Full error details:", errorDetails);
     }    
   };
   
+  const ChangeStatusToComplete = async () => {
+    try {
+      const url = `http://172.20.10.9:85/api/SG/Issue_Note/SetIssueNoteStatusFromIssuedToCompleted/${issueNoteId}`;
+      const response = await axios.post(url, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (response.status === 200) {
+        console.log('Status updated successfully:', response.data);
+       // alert('Status updated successfully');
+      } else {
+        console.log('Failed to update status:', response.data);
+       // alert('Failed to update status');
+      }
+    } catch (error) {
+      //console.error('Error status updating status:', error);
+      //alert('Error updating status');
+    }
+  };
 
   const handleSignature = (sig) => {
   const jpegSignature = sig.replace('data:image/png', 'data:image/jpeg');
@@ -204,17 +207,15 @@ const fetchQRCode = async () => {
         }
       })
       .then(() => {
-        //console.log('Response data:', data);
-        //fetchPdf();
         Toast.show({
           type: 'success',
           text1: 'Sign successfully',
-          text2: 'Your signature has been saved',
           position: 'bottom', 
-          visibilityTime: 4000, 
+          visibilityTime: 2000, 
         });
         console.log("success");
         fetchPdf();
+        //ChangeStatusToComplete();
       })
       .catch((error) => {
        // console.error('Fetch error:', error);
@@ -233,7 +234,8 @@ const fetchQRCode = async () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView  contentContainerStyle={{ flexGrow: 1 }} 
+    scrollEnabled={scrollEnabled}>
       <View style={styles.titleContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Digital Sign</Text>
@@ -245,6 +247,8 @@ const fetchQRCode = async () => {
         ref={ref}
         onOK={handleSignature}
         onEmpty={() => Alert.alert("Please sign above")}
+        onBegin={() => setScrollEnabled(false)}  
+        onEnd={() => setScrollEnabled(true)}    
         descriptionText="Sign here"
         clearText="Reset"
         confirmText="Finish"

@@ -187,6 +187,7 @@ export default function IssueNote({ route, navigation }) {
                     <Text style={styles.info}>Issue Note No: {issueNoteItem.Issue_Note_No}</Text>
                     <Text style={styles.info}>Issue Qty: {issueNoteItem.Issue_Qty}</Text>
                     <Text style={styles.info}>Issue Date: {issueNoteItem.Issue_Date}</Text>
+                    <Text style={styles.info}>Issue Status: {issueNoteItem.Status|| 'NULL'}</Text>
                     <Text style={styles.info}>Vehicle No: {issueNoteItem.Vehicle_No || 'NULL'}</Text>
                     <Text style={styles.info}>Driver: {issueNoteItem.Driver || 'NULL'}</Text>
                     <Text style={styles.info}>Driver IC: {issueNoteItem.Driver_IC || 'NULL'}</Text>
@@ -200,7 +201,8 @@ export default function IssueNote({ route, navigation }) {
                    {isIssueExpanded ? 'Show Less' : 'Show More...'}
                  </Text>
                </TouchableOpacity>
-                    <Button title="Sign" onPress={() => handleSignPress(issueNoteItem.Issue_Note_ID)} />                
+               {/* <View style={styles.separator} /> */}
+                    <Button title="Manage" onPress={() => handleSignPress(issueNoteItem.Issue_Note_ID)} />                
                </View>
                );
                 }}
@@ -236,9 +238,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  separator: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#ccc', 
+    marginBottom: 5,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#007AFF',
+  },
   expandText: {
     color: '#778899',
+    fontSize: 15,
     marginTop: 5,
+    marginBottom: 10,
   },
   emptyContainer: {
     flex: 1,

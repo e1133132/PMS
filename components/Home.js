@@ -80,6 +80,7 @@ export default function Home({ route,navigation }) {
       ) : (
         <Text style={styles.noData}>No data available for this username.</Text>
       )}
+      
     </View>
     </ImageBackground>
   );

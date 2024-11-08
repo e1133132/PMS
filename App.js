@@ -7,7 +7,7 @@ export default function App() {
     <>
       <AppNavigator />
       
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Toast />
     </>
   );
 }
