@@ -65,7 +65,7 @@ function BottomTabNavigator({ route }) {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          // 根据 Tab 的名称设置不同的图标
+          // set icons
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'IssueNoteTab') {
@@ -74,7 +74,7 @@ function BottomTabNavigator({ route }) {
             iconName = focused ? 'hand-right' : 'hand-right-outline';
           }
 
-          // 返回图标
+          // return incons
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#007AFF',
@@ -101,7 +101,7 @@ function BottomTabNavigator({ route }) {
         component={IssueNoteStackScreen}
         initialParams={{ token, customer_ID }}
         options={({ navigation }) => ({
-          title: 'Hire order & Issue Notes',
+          title: 'Issue Notes',
           headerRight: () => (
             <Button
               onPress={() => logout(navigation)}
