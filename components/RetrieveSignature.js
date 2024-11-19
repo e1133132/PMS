@@ -12,8 +12,8 @@ import ImageUploader from './TakePhoto';
 import QRCode from 'react-native-qrcode-svg';
 const screenWidth = Dimensions.get('window').width;
 
-export default function ElectronicSignature({route,navigation}) {
-  const { token, customer_ID,issueNoteId } = route.params;
+export default function RetrieveSignature({route,navigation}) {
+  const { token, customer_ID,RetrieveNoteId} = route.params;
   const [signature, setSignature] = useState(null);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const ref = useRef();
@@ -30,12 +30,12 @@ export default function ElectronicSignature({route,navigation}) {
 
   useEffect(() => {
     //fetchQRCode();
-    fetchImage();
+    //fetchImage();
     if (compressedSig) {
       fetchPdf();
     }
 
-  }, [ issueNoteId, token,compressedSig]);
+  }, [ RetrieveNoteId, token,compressedSig]);
 
   const onLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
@@ -45,7 +45,7 @@ export default function ElectronicSignature({route,navigation}) {
 
  const fetchImage = async () => {
       try {
-        const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}/qrcodepdf`, {
+        const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/${RetrieveNoteId}/qrcodepdf`, {
           method: 'GET',
         });
 
@@ -80,7 +80,7 @@ export default function ElectronicSignature({route,navigation}) {
 
 const fetchQRCode = async () => {
   try {
-      const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}/qrcode`, {
+      const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${RetrieveNoteId}/qrcode`, {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'arraybuffer', 
       });
@@ -102,7 +102,7 @@ const fetchQRCode = async () => {
   const downloadPdf = async (pdfBase64) => {
     const fileUri = FileSystem.documentDirectory + 'IssueNote.pdf';
     try {
-      const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${issueNoteId}`;
+      const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${RetrieveNoteId}`;
       const response = await axios.post(url,
         {
           //fileName: 'document.pdf',
@@ -146,7 +146,7 @@ const fetchQRCode = async () => {
   const fetchPdf = async () => {
     try {
       const pdfResponse = await axios.get(
-        `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${issueNoteId}`,
+        `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${RetrieveNoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ); 
       //const pdfData = pdfResponse.data;
@@ -164,7 +164,7 @@ const fetchQRCode = async () => {
         try {
           console.log(`Fetching PDF attempt ${attempt + 1}...`);
           const pdf = await axios.post(
-            'http://172.20.10.9:85/api/SG/Issue_Note/GetPdfOfIssueNote64',
+            'http://172.20.10.9:85/api/SG/Retrieve_Note/GetPdfOfRetrieveNote64',
             pdfData,
             {
               headers: {

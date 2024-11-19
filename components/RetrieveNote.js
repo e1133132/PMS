@@ -49,7 +49,15 @@ export default function RetrieveNote({ route}) {
     }
   };
 
-  const showall = async() =>{
+  const handleSignPress = (RetrieveNoteId) => {
+    navigation.navigate('RetrieveSignature', {
+      token: token,
+      RetrieveNoteId: RetrieveNoteId,
+      customer_ID: customer_ID,
+    });
+  };
+
+  const showAll = async() =>{
     setDateFilter(null);
  }
 
@@ -137,6 +145,7 @@ export default function RetrieveNote({ route}) {
                   <Text style={styles.info}>Retrieve Type: {item.Retrieve_Type}</Text>
                   <Text style={styles.info}>Tpn Company: {item.Tpn_Company}</Text>
                   <Text style={styles.info}>Remarks: {item.Remarks}</Text>
+                  <Button title="Manage" onPress={() => handleSignPress(item.Retrieve_Note_No)} />
                 </>
               ) : (
                 <TouchableOpacity onPress={() => toggleExpand(item.Retrieve_Note_ID)}>

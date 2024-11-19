@@ -24,7 +24,7 @@ export default function Home({ route,navigation }) {
         if (customer) {
           setUserData(customer);  
           navigation.navigate('IssueNoteTab', { customer_ID: customer.customer_ID, token });
-          navigation.navigate('RetrieveNote', { customer_ID: customer.customer_ID, token });
+          navigation.navigate('RetrieveNoteTab', { customer_ID: customer.customer_ID, token });
          
         } else {
           console.warn('No customer data found for the provided username');

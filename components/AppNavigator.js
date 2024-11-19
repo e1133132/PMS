@@ -14,12 +14,14 @@ import ElectronicSignature from './ElectronicSignature';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import RetrieveSignature from './RetrieveSignature';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // create a stack for IssueNote，including SignatureScreen
 const IssueNoteStack = createStackNavigator();
+const RetrieveNoteStack=createStackNavigator();
 
 const logout = async (navigation) => {
   try {
@@ -53,6 +55,27 @@ function IssueNoteStackScreen({ route }) {
         options={{ headerShown: false }}
       />
     </IssueNoteStack.Navigator>
+  );
+}
+
+
+function RetrieveNoteStackScreen({ route }) {
+  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
+  return (
+    <RetrieveNoteStack.Navigator>
+      <RetrieveNoteStack.Screen 
+      name="RetrieveNote" 
+      component={RetrieveNote} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID }} 
+      options={{ headerShown: false }}
+      />
+
+      <RetrieveNoteStack.Screen 
+        name="RetrieveSignature" 
+        component={RetrieveSignature} 
+        options={{ headerShown: false }}
+      />
+    </RetrieveNoteStack.Navigator>
   );
 }
 
@@ -111,8 +134,10 @@ function BottomTabNavigator({ route }) {
           ),
         })}
       />
-      <Tab.Screen name="RetrieveNote" 
-      component={RetrieveNote} 
+      <Tab.Screen 
+      name="RetrieveNoteTab" 
+      component={RetrieveNoteStackScreen}
+      initialParams={{ token, customer_ID }} 
       options={({ navigation }) => ({
         title: 'Retrieve Notes',
         headerRight: () => (

@@ -31,7 +31,6 @@ export default function IssueNote({ route, navigation }) {
     });
   };
   
-
   const showall = async() =>{
     setDateFilter(null);
  }
