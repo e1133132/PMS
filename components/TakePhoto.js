@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Alert, FlatList, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function ImageUploader({ issueNoteId, token }) {
+export default function ImageUploader({ issueNoteId,retrieveNoteId, token }) {
   const [selectedImages, setSelectedImages] = useState([]);
+  let uploadUrl;
 
   const selectImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -34,8 +35,11 @@ export default function ImageUploader({ issueNoteId, token }) {
         name: image.fileName || `photo${index}.jpg`,
       });
     });
-
-    const uploadUrl = `http://172.20.10.9:85/api/SG/Issue_Note/upload/${issueNoteId}`;
+    
+    if(retrieveNoteId!=null)
+      {uploadUrl = `http://172.20.10.9:85/api/SG/Retrieve_Note/upload/${retrieveNoteId}`}
+    else
+    {uploadUrl = `http://172.20.10.9:85/api/SG/Issue_Note/upload/${issueNoteId}`;}
     try {
       const response = await fetch(uploadUrl, {
         method: 'POST',

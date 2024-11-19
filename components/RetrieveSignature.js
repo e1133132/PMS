@@ -31,6 +31,7 @@ export default function RetrieveSignature({route,navigation}) {
   useEffect(() => {
     //fetchQRCode();
     //fetchImage();
+    //console.log(RetrieveNoteId);
     if (compressedSig) {
       fetchPdf();
     }
@@ -100,9 +101,9 @@ const fetchQRCode = async () => {
 };
 
   const downloadPdf = async (pdfBase64) => {
-    const fileUri = FileSystem.documentDirectory + 'IssueNote.pdf';
+    const fileUri = FileSystem.documentDirectory + 'RetrieveNote.pdf';
     try {
-      const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${RetrieveNoteId}`;
+      const url=`http://172.20.10.9:85/api/SG/Retrieve_Note/pdfupload/${RetrieveNoteId}`;
       const response = await axios.post(url,
         {
           //fileName: 'document.pdf',
@@ -145,8 +146,9 @@ const fetchQRCode = async () => {
   
   const fetchPdf = async () => {
     try {
+       // console.log(RetrieveNoteId);
       const pdfResponse = await axios.get(
-        `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${RetrieveNoteId}`,
+        `http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteDTOForDisplay/${RetrieveNoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ); 
       //const pdfData = pdfResponse.data;
@@ -155,7 +157,7 @@ const fetchQRCode = async () => {
         ...pdfResponse.data, 
         compressedSignatureBase64: compressedSig 
       };
-     // console.log("Fetched PDF Data:", pdfData);
+      //console.log("Fetched PDF Data:", pdfData);
       // const pdf = await axios.post('http://172.20.10.9:85/api/SG/Issue_Note/GetPdfOfIssueNote64', pdfData, {
       //   headers: {  Authorization: `Bearer ${token}`,'Content-Type': 'application/json' },
       //   responseType: 'arraybuffer',
@@ -234,7 +236,7 @@ const fetchQRCode = async () => {
   const preparedSig = prepareSignatureBase64(jpegSignature);
   setCompressedSig(preparedSig);
     const data = {
-      Issue_Note_ID: issueNoteId,  
+      Retrieve_Note_ID: RetrieveNoteId,  
       customer_ID: customer_ID,  
       SignatureBase64: preparedSig
     };
@@ -242,7 +244,7 @@ const fetchQRCode = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/SaveIssueNoteSign`, {
+    const response = await fetch(`http://172.20.10.9:85/api/SG/Retrieve_Note/SaveRetrieveNoteSign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -325,7 +327,7 @@ const fetchQRCode = async () => {
     ListHeaderComponent={
       <>
         <View style={styles.imageUploaderContainer}>
-          <ImageUploader token={token} issueNoteId={issueNoteId} />
+          <ImageUploader token={token} retrieveNoteId={RetrieveNoteId} />
         </View>
       </>
     }
@@ -336,7 +338,7 @@ const fetchQRCode = async () => {
           <Image source={{ uri: imageData }} style={{ width: 175, height: 175 }} />
         </View>
         <View style={styles.backButtonContainer}>
-          <Button title="Back to Issue Note" onPress={handleBack} />
+          <Button title="Back to Retrieve Note" onPress={handleBack} />
         </View>
       </>
     }

@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 
 
-export default function RetrieveNote({ route}) {
+export default function RetrieveNote({ route, navigation}) {
   const { token, customer_ID } = route.params;
   const [retrieveData, setreRrieveData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -128,14 +128,12 @@ export default function RetrieveNote({ route}) {
           const isExpanded = expandedItems[item.Retrieve_Note_ID]; // Check if this item is expanded
           return (
             <View style={styles.orderContainer}>
-              <Text style={styles.info}>Retrieve Note ID: {item.Retrieve_Note_ID}</Text>
-              <Text style={styles.info}>Creation Time: {item.Creation_Time}</Text>
+              <Text style={styles.info}>Retrieve Note No: {item.Retrieve_Note_No}</Text>
               <Text style={styles.info}>Status: {item.Status}</Text>
-
               {/* Only show three items unless expanded */}
               {isExpanded ? ( //if isexpanded  yes:....   no:....
                 <>
-                  <Text style={styles.info}>Retrieve Note No: {item.Retrieve_Note_No}</Text>
+                   <Text style={styles.info}>Retrieve Note ID: {item.Retrieve_Note_ID}</Text>
                   <Text style={styles.info}>Customer ID: {item.Customer_ID}</Text>
                   <Text style={styles.info}>Pallet Profile ID: {item.Pallet_Profile_ID}</Text>
                   <Text style={styles.info}>Qty: {item.Qty}</Text>
@@ -144,8 +142,8 @@ export default function RetrieveNote({ route}) {
                   <Text style={styles.info}>Retrieve Address: {item.Retrieve_Address}</Text>
                   <Text style={styles.info}>Retrieve Type: {item.Retrieve_Type}</Text>
                   <Text style={styles.info}>Tpn Company: {item.Tpn_Company}</Text>
+                  <Text style={styles.info}>Creation Time: {item.Creation_Time}</Text>
                   <Text style={styles.info}>Remarks: {item.Remarks}</Text>
-                  <Button title="Manage" onPress={() => handleSignPress(item.Retrieve_Note_No)} />
                 </>
               ) : (
                 <TouchableOpacity onPress={() => toggleExpand(item.Retrieve_Note_ID)}>
@@ -158,6 +156,7 @@ export default function RetrieveNote({ route}) {
                   <Text style={styles.expandText}>Show Less</Text>
                 </TouchableOpacity>
               )}
+              <Button title="Manage" onPress={() => handleSignPress(item.Retrieve_Note_ID)} />
             </View>
           );
         }}

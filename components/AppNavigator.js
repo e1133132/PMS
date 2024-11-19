@@ -93,7 +93,7 @@ function BottomTabNavigator({ route }) {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'IssueNoteTab') {
             iconName = focused ? 'file-tray-full' : 'file-tray-full-outline';
-          } else if (route.name === 'RetrieveNote') {
+          } else if (route.name === 'RetrieveNoteTab') {
             iconName = focused ? 'hand-right' : 'hand-right-outline';
           }
 
