@@ -18,7 +18,7 @@ export default function RetrieveNote({ route, navigation}) {
   useEffect(() => {
     const fetchRetrieves = async () => {
       try {  
-        const response = await axios.get(`http://172.20.10.9:85/api/SG/Retrieve_Note/${customer_ID}`, {
+        const response = await axios.get(`http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const retrieve=response.data;
@@ -77,6 +77,7 @@ export default function RetrieveNote({ route, navigation}) {
       (item.Status && item.Status.toLowerCase().includes(searchTerm)) ||
       (item.Retrieve_Note_No && item.Retrieve_Note_No.toLowerCase().includes(searchTerm)) ||
       (item.Customer_ID && item.Customer_ID.toString().includes(searchTerm)) ||
+      (item.Customer_Name && item.Customer_Name.toString().includes(searchTerm)) ||
       (item.Pallet_Profile_ID && item.Pallet_Profile_ID.toString().includes(searchTerm)) ||
       (item.Qty && item.Qty.toString().includes(searchTerm)) ||
       (item.Vehicle_No && item.Vehicle_No.toLowerCase().includes(searchTerm)) ||
@@ -122,18 +123,19 @@ export default function RetrieveNote({ route, navigation}) {
       />
 
 <FlatList
-        data={filteredRetrieveNoteData}
+        data={filteredRetrieveNoteData.filter(item => item.Status === "New")}
         keyExtractor={(item) => item.Retrieve_Note_ID.toString()}
         renderItem={({ item }) => {
           const isExpanded = expandedItems[item.Retrieve_Note_ID]; // Check if this item is expanded
           return (
             <View style={styles.orderContainer}>
               <Text style={styles.info}>Retrieve Note No: {item.Retrieve_Note_No}</Text>
-              <Text style={styles.info}>Status: {item.Status}</Text>
+              <Text style={styles.info}>Customer Name: {item.Customer_Name}</Text>
               {/* Only show three items unless expanded */}
               {isExpanded ? ( //if isexpanded  yes:....   no:....
                 <>
-                   <Text style={styles.info}>Retrieve Note ID: {item.Retrieve_Note_ID}</Text>
+                  <Text style={styles.info}>Status: {item.Status}</Text>
+                  <Text style={styles.info}>Retrieve Note ID: {item.Retrieve_Note_ID}</Text>
                   <Text style={styles.info}>Customer ID: {item.Customer_ID}</Text>
                   <Text style={styles.info}>Pallet Profile ID: {item.Pallet_Profile_ID}</Text>
                   <Text style={styles.info}>Qty: {item.Qty}</Text>

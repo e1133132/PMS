@@ -30,7 +30,7 @@ export default function RetrieveSignature({route,navigation}) {
 
   useEffect(() => {
     //fetchQRCode();
-    //fetchImage();
+    fetchImage();
     //console.log(RetrieveNoteId);
     if (compressedSig) {
       fetchPdf();
@@ -46,7 +46,7 @@ export default function RetrieveSignature({route,navigation}) {
 
  const fetchImage = async () => {
       try {
-        const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/${RetrieveNoteId}/qrcodepdf`, {
+        const response = await fetch(`http://172.20.10.9:85/api/SG/Retrieve_Note/${RetrieveNoteId}/qrcode`, {
           method: 'GET',
         });
 

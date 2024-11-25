@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "activity-4",
+    "newArchEnabled": true,
     "slug": "snack-7503665b-bfdc-4637-8865-e9f69d969cb4",
     "version": "1.0.0",
     "orientation": "portrait",

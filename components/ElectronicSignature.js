@@ -105,7 +105,6 @@ const fetchQRCode = async () => {
       const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${issueNoteId}`;
       const response = await axios.post(url,
         {
-          //fileName: 'document.pdf',
           fileData: pdfBase64,
         },
         { 
@@ -174,8 +173,24 @@ const fetchQRCode = async () => {
               responseType: 'arraybuffer'
             }
           );
-    
-          console.log(pdf.status);
+          const email = await axios.post(
+            `http://172.20.10.9:85/api/SG/Issue_Note/SendEmail/${issueNoteId}`,
+            pdfData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              responseType: 'json'
+            }
+          );
+
+          if (email.status === 200 && email.data) {
+            console.log("email sent successfully");
+          } else {
+            console.log("Failed to send email");
+          }
+          //console.log(pdf.status);
           if (pdf.status === 200 && pdf.data) {
             const pdfBlob = pdf.data;
             const pdfBase64 = Buffer.from(pdfBlob, 'binary').toString('base64');
