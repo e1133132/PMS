@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 
 export default function IssueNote({ route, navigation }) {
-  const { token, customer_ID} = route.params;
+  const { token, customer_ID,Role} = route.params;
   const [issueNotesData, setIssueNotesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +13,8 @@ export default function IssueNote({ route, navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
 
-
+//console.log(Role);
+  let issueURL=null;
   const onDateChange = (event, selectedDate) => {
     if (selectedDate) {
       //setShowDatePicker(false);
@@ -39,12 +40,16 @@ export default function IssueNote({ route, navigation }) {
     setExpandedItems((prev) => ({ ...prev, [issueNoteId]: !prev[issueNoteId] }));
   };
 
-
   useEffect(() => {
     const fetchIssueNotes = async () => {
       try {
+        if(Role=="Customer")
+          {issueURL=`http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithName/${customer_ID}`}
+        else if(Role=="Staff")
+        {issueURL=`http://172.20.10.9:85/api/SG/Issue_Note/NewIssueNote`}
+
         const response = await axios.get(
-          `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithName/${customer_ID}`,
+          issueURL,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setIssueNotesData(response.data);

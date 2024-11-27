@@ -30,6 +30,23 @@ export default function Login({ navigation }) {
   };
   
  
+  const getCustomerRole = async (token,usernameToUse) => {
+    try {
+      const response = await axios.get(
+        `http://172.20.10.9:85/api/SG/MobileCustomerContacts/${usernameToUse}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+      return response.data; 
+    } catch (error) {
+      console.error('Error fetching customer role:', error);
+      return null; 
+    }
+  };
+
   const handleLogin = async (savedUsername, savedPassword) => {
     try {
       setIsLoading(true);
@@ -48,7 +65,12 @@ export default function Login({ navigation }) {
         await AsyncStorage.setItem('token', access_token);
         await AsyncStorage.setItem('username', usernameToUse);
         await AsyncStorage.setItem('password', passwordToUse);
-        navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in });
+        //console.log(access_token);
+        //console.log(usernameToUse);
+        const role =await getCustomerRole(access_token,usernameToUse);
+        //console.log(role);
+
+        navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in ,Role:role});
   
         setUsername('');
         setPassword('');

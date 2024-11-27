@@ -1,5 +1,5 @@
 import React, { useRef, useState,useEffect } from 'react';
-import { View, Button, Text, StyleSheet, Alert,Image,Dimensions,FlatList,useWindowDimensions} from 'react-native';
+import {  Platform,View, Button, Text, StyleSheet, Alert,Image,Dimensions,FlatList,useWindowDimensions} from 'react-native';
 import Signature from 'react-native-signature-canvas';
 import pako from 'pako';
 import SignatureView from 'react-native-signature-view';
@@ -27,6 +27,7 @@ export default function ElectronicSignature({route,navigation}) {
   const { width, height } = useWindowDimensions();
   const [canvasSize, setCanvasSize] = useState({ width: 100, height: 100 });
   const [imageData, setImageData] = useState(null);
+
 
   useEffect(() => {
     //fetchQRCode();
@@ -154,7 +155,7 @@ const fetchQRCode = async () => {
         ...pdfResponse.data, 
         compressedSignatureBase64: compressedSig 
       };
-     // console.log("Fetched PDF Data:", pdfData);
+      //console.log("Fetched PDF Data:", pdfData);
       // const pdf = await axios.post('http://172.20.10.9:85/api/SG/Issue_Note/GetPdfOfIssueNote64', pdfData, {
       //   headers: {  Authorization: `Bearer ${token}`,'Content-Type': 'application/json' },
       //   responseType: 'arraybuffer',
@@ -170,7 +171,8 @@ const fetchQRCode = async () => {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
               },
-              responseType: 'arraybuffer'
+              responseType: 'arraybuffer',
+              timeout: 300000,
             }
           );
           const email = await axios.post(

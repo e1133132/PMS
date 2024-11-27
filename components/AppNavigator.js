@@ -39,13 +39,13 @@ const logout = async (navigation) => {
 };
 
 function IssueNoteStackScreen({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
+  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
   return (
     <IssueNoteStack.Navigator>
       <IssueNoteStack.Screen 
       name="IssueNote" 
       component={IssueNote} 
-      initialParams={{ token, userName, userNumber, expiresIn, customer_ID }} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
       options={{ headerShown: false }}
       />
 
@@ -60,13 +60,13 @@ function IssueNoteStackScreen({ route }) {
 
 
 function RetrieveNoteStackScreen({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {};
+  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
   return (
     <RetrieveNoteStack.Navigator>
       <RetrieveNoteStack.Screen 
       name="RetrieveNote" 
       component={RetrieveNote} 
-      initialParams={{ token, userName, userNumber, expiresIn, customer_ID }} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
       options={{ headerShown: false }}
       />
 
@@ -80,7 +80,7 @@ function RetrieveNoteStackScreen({ route }) {
 }
 
 function BottomTabNavigator({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID } = route.params || {}; 
+  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {}; 
 
   return (
     <Tab.Navigator initialRouteName="Home"
@@ -122,7 +122,7 @@ function BottomTabNavigator({ route }) {
       <Tab.Screen
         name="IssueNoteTab"
         component={IssueNoteStackScreen}
-        initialParams={{ token, customer_ID }}
+        initialParams={{ token, customer_ID,Role }}
         options={({ navigation }) => ({
           title: 'Issue Notes',
           headerRight: () => (
@@ -137,7 +137,7 @@ function BottomTabNavigator({ route }) {
       <Tab.Screen 
       name="RetrieveNoteTab" 
       component={RetrieveNoteStackScreen}
-      initialParams={{ token, customer_ID }} 
+      initialParams={{ token, customer_ID,Role }} 
       options={({ navigation }) => ({
         title: 'Retrieve Notes',
         headerRight: () => (

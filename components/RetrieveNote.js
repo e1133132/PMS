@@ -6,19 +6,24 @@ import axios from 'axios';
 
 
 export default function RetrieveNote({ route, navigation}) {
-  const { token, customer_ID } = route.params;
+  const { token, customer_ID,Role } = route.params;
   const [retrieveData, setreRrieveData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { selectedOption } = route.params || {}; 
   const [searchQuery, setSearchQuery] = useState(''); 
   const [dateFilter, setDateFilter] = useState(null); // save month
   const [showDatePicker, setShowDatePicker] = useState(false); // contrl show of date selector
-  const [expandedItems, setExpandedItems] = useState({}); 
-
+  const [expandedItems, setExpandedItems] = useState({});
+  let retrieveURL=null; 
+//console.log(token);
   useEffect(() => {
     const fetchRetrieves = async () => {
       try {  
-        const response = await axios.get(`http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`, {
+        if(Role=="Customer")
+          {retrieveURL=`http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`}
+        else if(Role=="Staff")
+        {retrieveURL=`http://172.20.10.9:85/api/SG/Retrieve_Note/NewRetrieveNote`}
+        const response = await axios.get(retrieveURL, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const retrieve=response.data;

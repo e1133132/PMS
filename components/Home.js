@@ -15,7 +15,7 @@ export default function Home({ route,navigation }) {
         const response = await axios.get(`http://172.20.10.9:85/api/SG/Customers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
+        console.log(userName);
 
         // select
         const customer = response.data.find((customer) => customer.Customer_Name === userName);
