@@ -5,7 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './Login';
-import Home from './Home';
+import ExchangeAdd from './ExchangeAdd';
+import Exchange from './Exchange';
 import Add from './Add';
 import IssueNote from './IssueNote';
 import Navbar from './Navbar';
@@ -15,6 +16,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RetrieveSignature from './RetrieveSignature';
+import Settings from './Settings';
+import Movement from './Movement';
+import MovementHistory from './MovementHistory';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +26,7 @@ const Tab = createBottomTabNavigator();
 // create a stack for IssueNote，including SignatureScreen
 const IssueNoteStack = createStackNavigator();
 const RetrieveNoteStack=createStackNavigator();
+const MovementStack=createStackNavigator();
 
 const logout = async (navigation) => {
   try {
@@ -79,23 +84,60 @@ function RetrieveNoteStackScreen({ route }) {
   );
 }
 
+function MovementStackScreen({ route }) {
+  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
+  return (
+    <MovementStack.Navigator>
+      <MovementStack.Screen 
+      name="ExchangeNote" 
+      component={Exchange} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+      options={{ headerShown: false }}
+      />
+
+      <MovementStack.Screen 
+        name="Movement" 
+        component={Movement} 
+        initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+        options={{ headerShown: false }}
+      />
+
+      <MovementStack.Screen 
+        name="MovementHistory" 
+        component={MovementHistory} 
+        initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+        options={{ headerShown: false }}
+      />
+      <MovementStack.Screen 
+        name="ExchangeAdd" 
+        component={ExchangeAdd} 
+        initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+        options={{ headerShown: false }}
+      />
+
+    </MovementStack.Navigator>
+  );
+}
+
 function BottomTabNavigator({ route }) {
   const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {}; 
 
   return (
-    <Tab.Navigator initialRouteName="Home"
+    <Tab.Navigator initialRouteName="SettingsTab"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           // set icons
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
+          if (route.name === 'Exchange') {
+            iconName = focused ? 'swap-vertical' : 'swap-vertical-outline';
           } else if (route.name === 'IssueNoteTab') {
             iconName = focused ? 'file-tray-full' : 'file-tray-full-outline';
           } else if (route.name === 'RetrieveNoteTab') {
             iconName = focused ? 'hand-right' : 'hand-right-outline';
-          }
+          }else if (route.name === 'SettingsTab') {
+            iconName = focused ? 'settings' : 'settings-outline';
+          } 
 
           // return incons
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -104,21 +146,7 @@ function BottomTabNavigator({ route }) {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        initialParams={{ token, userName, userNumber, expiresIn }}
-        options={({ navigation }) => ({
-          title: 'Profile',
-          headerRight: () => (
-            <Button
-              onPress={() => logout(navigation)}
-              title="Log Out"
-              color="#000"
-            />
-          ),
-        })}
-      />
+      
       <Tab.Screen
         name="IssueNoteTab"
         component={IssueNoteStackScreen}
@@ -149,6 +177,36 @@ function BottomTabNavigator({ route }) {
         ),
       })}
       />
+      <Tab.Screen
+      name="Exchange"
+      component={MovementStackScreen}
+      initialParams={{ token, customer_ID,Role  }}
+      options={({ navigation }) => ({
+        title: 'Exchange Notes',
+        headerRight: () => (
+          <Button
+            onPress={() => logout(navigation)}
+            title="Log Out"
+            color="#000"
+          />
+        ),
+      })}
+    />
+      <Tab.Screen
+      name="SettingsTab"
+      component={Settings}
+      initialParams={{ token, userName,customer_ID, Role }}
+      options={({ navigation }) => ({
+        title: 'Settings',
+        headerRight: () => (
+          <Button
+            onPress={() => logout(navigation)}
+            title="Log Out"
+            color="#000"
+          />
+        ),
+      })}
+    />
     </Tab.Navigator>
   );
 }

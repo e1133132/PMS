@@ -71,7 +71,6 @@ export default function Login({ navigation }) {
         //console.log(role);
 
         navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in ,Role:role});
-  
         setUsername('');
         setPassword('');
         setErrMsg('');
