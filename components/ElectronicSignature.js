@@ -2,7 +2,6 @@ import React, { useRef, useState,useEffect } from 'react';
 import {  Platform,View, Button, Text, StyleSheet, Alert,Image,Dimensions,FlatList,useWindowDimensions} from 'react-native';
 import Signature from 'react-native-signature-canvas';
 import pako from 'pako';
-import SignatureView from 'react-native-signature-view';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import axios from 'axios';
@@ -46,7 +45,7 @@ export default function ElectronicSignature({route,navigation}) {
 
  const fetchImage = async () => {
       try {
-        const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}/qrcodepdf`, {
+        const response = await fetch(`http://115.42.158.153:85/api/SG/Issue_Note/${issueNoteId}/qrcodepdf`, {
           method: 'GET',
         });
 
@@ -81,7 +80,7 @@ export default function ElectronicSignature({route,navigation}) {
 
 const fetchQRCode = async () => {
   try {
-      const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${issueNoteId}/qrcode`, {
+      const response = await axios.get(`http://115.42.158.153:85/api/SG/Issue_Note/${issueNoteId}/qrcode`, {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'arraybuffer', 
       });
@@ -103,7 +102,7 @@ const fetchQRCode = async () => {
   const downloadPdf = async (pdfBase64) => {
     const fileUri = FileSystem.documentDirectory + 'IssueNote.pdf';
     try {
-      const url=`http://172.20.10.9:85/api/SG/Issue_Note/pdfupload/${issueNoteId}`;
+      const url=`http://115.42.158.153:85/api/SG/Issue_Note/pdfupload/${issueNoteId}`;
       const response = await axios.post(url,
         {
           fileData: pdfBase64,
@@ -146,7 +145,7 @@ const fetchQRCode = async () => {
   const fetchPdf = async () => {
     try {
       const pdfResponse = await axios.get(
-        `http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${issueNoteId}`,
+        `http://115.42.158.153:85/api/SG/Issue_Note/GetIssueNoteDTOForDisplay/${issueNoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ); 
       //const pdfData = pdfResponse.data;
@@ -164,7 +163,7 @@ const fetchQRCode = async () => {
         try {
           console.log(`Fetching PDF attempt ${attempt + 1}...`);
           const pdf = await axios.post(
-            'http://172.20.10.9:85/api/SG/Issue_Note/GetPdfOfIssueNote64',
+            'http://115.42.158.153:85/api/SG/Issue_Note/GetPdfOfIssueNote64',
             pdfData,
             {
               headers: {
@@ -176,7 +175,7 @@ const fetchQRCode = async () => {
             }
           );
           const email = await axios.post(
-            `http://172.20.10.9:85/api/SG/Issue_Note/SendEmail/${issueNoteId}`,
+            `http://115.42.158.153:85/api/SG/Issue_Note/SendEmail/${issueNoteId}`,
             pdfData,
             {
               headers: {
@@ -259,7 +258,7 @@ const fetchQRCode = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const response = await fetch(`http://172.20.10.9:85/api/SG/Issue_Note/SaveIssueNoteSign`, {
+    const response = await fetch(`http://115.42.158.153:85/api/SG/Issue_Note/SaveIssueNoteSign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

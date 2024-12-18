@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 
 export default function IssueNote({ route, navigation }) {
-  const { token, customer_ID,Role} = route.params;
+  const { token, customer_ID,department} = route.params;
   const [issueNotesData, setIssueNotesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +13,6 @@ export default function IssueNote({ route, navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
 
-//console.log(Role);
   let issueURL=null;
   const onDateChange = (event, selectedDate) => {
     if (selectedDate) {
@@ -43,10 +42,12 @@ export default function IssueNote({ route, navigation }) {
   useEffect(() => {
     const fetchIssueNotes = async () => {
       try {
-        if(Role=="Customer")
-          {issueURL=`http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithName/${customer_ID}`}
-        else if(Role=="Staff")
-        {issueURL=`http://172.20.10.9:85/api/SG/Issue_Note/NewIssueNote`}
+        // if(Role=="Customer")
+        //   {issueURL=`http://172.20.10.9:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithName/${customer_ID}`}
+         if(department=="All")
+        {issueURL=`http://115.42.158.153:85/api/SG/Issue_Note/NewIssueNote`}
+         else 
+        {issueURL=`http://115.42.158.153:85/api/SG/Issue_Note/GetIssueNoteFromCustomerIdWithCombinedTablesWithName/${customer_ID}`}
 
         const response = await axios.get(
           issueURL,

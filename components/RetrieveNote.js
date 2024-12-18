@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 export default function RetrieveNote({ route, navigation}) {
-  const { token, customer_ID,Role } = route.params;
+  const { token, customer_ID,department } = route.params;
   const [retrieveData, setreRrieveData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { selectedOption } = route.params || {}; 
@@ -15,14 +15,16 @@ export default function RetrieveNote({ route, navigation}) {
   const [showDatePicker, setShowDatePicker] = useState(false); // contrl show of date selector
   const [expandedItems, setExpandedItems] = useState({});
   let retrieveURL=null; 
-//console.log(token);
+//console.log(customer_ID);
   useEffect(() => {
     const fetchRetrieves = async () => {
       try {  
-        if(Role=="Customer")
-          {retrieveURL=`http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`}
-        else if(Role=="Staff")
-        {retrieveURL=`http://172.20.10.9:85/api/SG/Retrieve_Note/NewRetrieveNote`}
+        // if(Role=="Customer")
+        //   {retrieveURL=`http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`}
+        if(department=="All")
+        {retrieveURL=`http://115.42.158.153:85/api/SG/Retrieve_Note/NewRetrieveNote`}
+        else
+        {retrieveURL=`http://115.42.158.153:85/api/SG/Retrieve_Note/GetRetrieveNoteWithName/${customer_ID}`}
         const response = await axios.get(retrieveURL, {
           headers: { Authorization: `Bearer ${token}` },
         });

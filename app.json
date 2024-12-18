@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/lhtloading.jpg",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hanhanxiong.snack7503665bbfdc46378865e9f69d969cb4"
     },
     "web": {
       "favicon": "./assets/favicon.png"

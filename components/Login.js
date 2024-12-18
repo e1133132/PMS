@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
   const getCustomerRole = async (token,usernameToUse) => {
     try {
       const response = await axios.get(
-        `http://172.20.10.9:85/api/SG/MobileCustomerContacts/${usernameToUse}`,
+        `http://115.42.158.153:85/api/SG/MobileCustomerContacts/${usernameToUse}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -54,12 +54,12 @@ export default function Login({ navigation }) {
       const passwordToUse = savedPassword || password;
   
       const data = `grant_type=password&username=${encodeURIComponent(usernameToUse)}&password=${encodeURIComponent(passwordToUse)}`;
-      const response = await axios.post('http://172.20.10.9:85/token', data, {
+      const response = await axios.post('http://115.42.158.153:85/token', data, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
   
       if (response.data && response.data.access_token) {
-        const { access_token, userName, userNumber, expires_in } = response.data;
+        const { access_token, userName, userNumber, expires_in,department,user_mobile_modules } = response.data;
   
        
         await AsyncStorage.setItem('token', access_token);
@@ -67,10 +67,10 @@ export default function Login({ navigation }) {
         await AsyncStorage.setItem('password', passwordToUse);
         //console.log(access_token);
         //console.log(usernameToUse);
-        const role =await getCustomerRole(access_token,usernameToUse);
+        //const role =await getCustomerRole(access_token,usernameToUse);
         //console.log(role);
-
-        navigation.navigate('HomeTabs', { token: access_token, userName, userNumber, expiresIn: expires_in ,Role:role});
+        const role=null;
+        navigation.navigate('HomeTabs', { token: access_token, userName, userNumber:userNumber, expiresIn: expires_in ,Role:role,department:department,modules:user_mobile_modules});
         setUsername('');
         setPassword('');
         setErrMsg('');

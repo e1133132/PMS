@@ -31,17 +31,19 @@ export default function Settings({ route,navigation }) {
   const fetchAllCustomers = async () => {
     try {
       // get all customer info
-      const response = await axios.get(`http://172.20.10.9:85/api/SG/Customers`, {
+      const response = await axios.get(`http://115.42.158.153:85/api/SG/Customers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(userName);
 
       // select
       const customer = response.data.find((customer) => customer.Customer_Name === userName);
+      //console.log(customer);
       //navigation.navigate('ElectronicSignature', { customer_ID: customer.customer_ID, token });
       // update user data
       if (customer) {
         setUserData(customer);  
+        //console.log(customer.customer_ID);
         navigation.navigate('IssueNoteTab', { customer_ID: customer.customer_ID, token });
         navigation.navigate('RetrieveNoteTab', { customer_ID: customer.customer_ID, token });
         navigation.navigate('Exchange', { customer_ID: customer.customer_ID, token });

@@ -2,7 +2,6 @@ import React, { useRef, useState,useEffect } from 'react';
 import { View, Button, Text, StyleSheet, Alert,Image,Dimensions,FlatList,useWindowDimensions} from 'react-native';
 import Signature from 'react-native-signature-canvas';
 import pako from 'pako';
-import SignatureView from 'react-native-signature-view';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import axios from 'axios';
@@ -46,7 +45,7 @@ export default function RetrieveSignature({route,navigation}) {
 
  const fetchImage = async () => {
       try {
-        const response = await fetch(`http://172.20.10.9:85/api/SG/Retrieve_Note/${RetrieveNoteId}/qrcode`, {
+        const response = await fetch(`http://115.42.158.153:85/api/SG/Retrieve_Note/${RetrieveNoteId}/qrcode`, {
           method: 'GET',
         });
 
@@ -81,7 +80,7 @@ export default function RetrieveSignature({route,navigation}) {
 
 const fetchQRCode = async () => {
   try {
-      const response = await axios.get(`http://172.20.10.9:85/api/SG/Issue_Note/${RetrieveNoteId}/qrcode`, {
+      const response = await axios.get(`http://115.42.158.153:85/api/SG/Issue_Note/${RetrieveNoteId}/qrcode`, {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'arraybuffer', 
       });
@@ -103,7 +102,7 @@ const fetchQRCode = async () => {
   const downloadPdf = async (pdfBase64) => {
     const fileUri = FileSystem.documentDirectory + 'RetrieveNote.pdf';
     try {
-      const url=`http://172.20.10.9:85/api/SG/Retrieve_Note/pdfupload/${RetrieveNoteId}`;
+      const url=`http://115.42.158.153:85/api/SG/Retrieve_Note/pdfupload/${RetrieveNoteId}`;
       const response = await axios.post(url,
         {
           //fileName: 'document.pdf',
@@ -148,7 +147,7 @@ const fetchQRCode = async () => {
     try {
        // console.log(RetrieveNoteId);
       const pdfResponse = await axios.get(
-        `http://172.20.10.9:85/api/SG/Retrieve_Note/GetRetrieveNoteDTOForDisplay/${RetrieveNoteId}`,
+        `http://115.42.158.153:85/api/SG/Retrieve_Note/GetRetrieveNoteDTOForDisplay/${RetrieveNoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ); 
       //const pdfData = pdfResponse.data;
@@ -166,7 +165,7 @@ const fetchQRCode = async () => {
         try {
           console.log(`Fetching PDF attempt ${attempt + 1}...`);
           const pdf = await axios.post(
-            'http://172.20.10.9:85/api/SG/Retrieve_Note/GetPdfOfRetrieveNote64',
+            'http://115.42.158.153:85/api/SG/Retrieve_Note/GetPdfOfRetrieveNote64',
             pdfData,
             {
               headers: {
@@ -244,7 +243,7 @@ const fetchQRCode = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const response = await fetch(`http://172.20.10.9:85/api/SG/Retrieve_Note/SaveRetrieveNoteSign`, {
+    const response = await fetch(`http://115.42.158.153:85/api/SG/Retrieve_Note/SaveRetrieveNoteSign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

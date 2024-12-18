@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image, Button } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function MovementHistory({ route,navigation }) {

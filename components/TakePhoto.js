@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Alert, FlatList, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function ImageUploader({ issueNoteId,retrieveNoteId, token }) {
+export default function ImageUploader({ issueNoteId,retrieveNoteId,DFI_Movement_History_ID, token }) {
   const [selectedImages, setSelectedImages] = useState([]);
   let uploadUrl;
 
@@ -27,6 +27,9 @@ export default function ImageUploader({ issueNoteId,retrieveNoteId, token }) {
   };
 
   const uploadImages = async () => {
+    console.log("issueNoteId:", issueNoteId);
+  console.log("retrieveNoteId:", retrieveNoteId);
+  console.log("DFI_Movement_History_ID:", DFI_Movement_History_ID);
     const formData = new FormData();
     selectedImages.forEach((image, index) => {
       formData.append(`file${index}`, {
@@ -37,10 +40,14 @@ export default function ImageUploader({ issueNoteId,retrieveNoteId, token }) {
     });
     
     if(retrieveNoteId!=null)
-      {uploadUrl = `http://172.20.10.9:85/api/SG/Retrieve_Note/upload/${retrieveNoteId}`}
-    else
-    {uploadUrl = `http://172.20.10.9:85/api/SG/Issue_Note/upload/${issueNoteId}`;}
+      {uploadUrl = `http://115.42.158.153:85/api/SG/Retrieve_Note/upload/${retrieveNoteId}`}
+    else if(issueNoteId!=null)
+    {uploadUrl = `http://115.42.158.153:85/api/SG/Issue_Note/upload/${issueNoteId}`;}
+    else if(DFI_Movement_History_ID!=null){
+      uploadUrl = `http://115.42.158.153:85/api/SG/Movement/upload/${DFI_Movement_History_ID}`;
+    }
     try {
+      console.log(uploadUrl);
       const response = await fetch(uploadUrl, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },

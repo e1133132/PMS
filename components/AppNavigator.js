@@ -20,6 +20,7 @@ import Settings from './Settings';
 import Movement from './Movement';
 import MovementHistory from './MovementHistory';
 
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,8 @@ const Tab = createBottomTabNavigator();
 const IssueNoteStack = createStackNavigator();
 const RetrieveNoteStack=createStackNavigator();
 const MovementStack=createStackNavigator();
+
+
 
 const logout = async (navigation) => {
   try {
@@ -44,13 +47,13 @@ const logout = async (navigation) => {
 };
 
 function IssueNoteStackScreen({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
+  const { token, userName, userNumber, expiresIn, customer_ID,Role,department } = route.params || {};
   return (
     <IssueNoteStack.Navigator>
       <IssueNoteStack.Screen 
       name="IssueNote" 
       component={IssueNote} 
-      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role,department }} 
       options={{ headerShown: false }}
       />
 
@@ -65,13 +68,13 @@ function IssueNoteStackScreen({ route }) {
 
 
 function RetrieveNoteStackScreen({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
+  const { token, userName, userNumber, expiresIn, customer_ID,Role,department } = route.params || {};
   return (
     <RetrieveNoteStack.Navigator>
       <RetrieveNoteStack.Screen 
       name="RetrieveNote" 
       component={RetrieveNote} 
-      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
+      initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role,department }} 
       options={{ headerShown: false }}
       />
 
@@ -88,12 +91,12 @@ function MovementStackScreen({ route }) {
   const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {};
   return (
     <MovementStack.Navigator>
-      <MovementStack.Screen 
+      {/* <MovementStack.Screen 
       name="ExchangeNote" 
       component={Exchange} 
       initialParams={{ token, userName, userNumber, expiresIn, customer_ID,Role }} 
       options={{ headerShown: false }}
-      />
+      /> */}
 
       <MovementStack.Screen 
         name="Movement" 
@@ -120,8 +123,10 @@ function MovementStackScreen({ route }) {
 }
 
 function BottomTabNavigator({ route }) {
-  const { token, userName, userNumber, expiresIn, customer_ID,Role } = route.params || {}; 
-
+  const { token, userName, userNumber, expiresIn, customer_ID,Role,department,modules } = route.params || {}; 
+  //console.log(department);
+  const parsedModules = JSON.parse(modules || '[]');
+  //console.log(parsedModules);
   return (
     <Tab.Navigator initialRouteName="SettingsTab"
       screenOptions={({ route }) => ({
@@ -147,66 +152,89 @@ function BottomTabNavigator({ route }) {
       })}
     >
       
-      <Tab.Screen
-        name="IssueNoteTab"
-        component={IssueNoteStackScreen}
-        initialParams={{ token, customer_ID,Role }}
-        options={({ navigation }) => ({
-          title: 'Issue Notes',
-          headerRight: () => (
-            <Button
-              onPress={() => logout(navigation)}
-              title="Log Out"
-              color="#000"
+      {parsedModules.map((module) => {
+        if (module.ModuleName === 'Issue_Note') {
+          return (
+            <Tab.Screen
+              key="IssueNoteTab"
+              name="IssueNoteTab"
+              component={IssueNoteStackScreen}
+              initialParams={{ token, customer_ID, Role, department, modules }}
+              options={({ navigation }) => ({
+                title: 'Issue Notes',
+                headerRight: () => (
+                  <Button
+                    onPress={() => logout(navigation)}
+                    title="Log Out"
+                    color="#000"
+                  />
+                ),
+              })}
             />
-          ),
+          );
+        }
+        if (module.ModuleName.trim().toLowerCase() === 'retrieve_note') {
+          return (
+            <Tab.Screen
+              key="RetrieveNoteTab"
+              name="RetrieveNoteTab"
+              component={RetrieveNoteStackScreen}
+              initialParams={{ token, customer_ID, Role, department, modules }}
+              options={({ navigation }) => ({
+                title: 'Retrieve Notes',
+                headerRight: () => (
+                  <Button
+                    onPress={() => logout(navigation)}
+                    title="Log Out"
+                    color="#000"
+                  />
+                ),
+              })}
+            />
+          );
+        }
+        if (module.ModuleName === 'Exchange_Note') {
+          return (
+            <Tab.Screen
+              key="Exchange"
+              name="Exchange"
+              component={MovementStackScreen}
+              initialParams={{ token, customer_ID, Role, department, modules,userNumber }}
+              options={({ navigation }) => ({
+                title: 'Exchange Notes',
+                headerRight: () => (
+                  <Button
+                    onPress={() => logout(navigation)}
+                    title="Log Out"
+                    color="#000"
+                  />
+                ),
+              })}
+            />
+          );
+        }
+        //return null;
+      
+        if (module.ModuleName === 'Setting') {
+          return(
+              <Tab.Screen
+              name="SettingsTab"
+              component={Settings}
+              initialParams={{ token, userName,customer_ID, Role }}
+              options={({ navigation }) => ({
+                title: 'Settings',
+                headerRight: () => (
+                  <Button
+                    onPress={() => logout(navigation)}
+                    title="Log Out"
+                    color="#000"
+                  />
+                ),
+              })}
+            />
+            )
+        }return null;
         })}
-      />
-      <Tab.Screen 
-      name="RetrieveNoteTab" 
-      component={RetrieveNoteStackScreen}
-      initialParams={{ token, customer_ID,Role }} 
-      options={({ navigation }) => ({
-        title: 'Retrieve Notes',
-        headerRight: () => (
-          <Button
-            onPress={() => logout(navigation)}
-            title="Log Out"
-            color="#000"
-          />
-        ),
-      })}
-      />
-      <Tab.Screen
-      name="Exchange"
-      component={MovementStackScreen}
-      initialParams={{ token, customer_ID,Role  }}
-      options={({ navigation }) => ({
-        title: 'Exchange Notes',
-        headerRight: () => (
-          <Button
-            onPress={() => logout(navigation)}
-            title="Log Out"
-            color="#000"
-          />
-        ),
-      })}
-    />
-      <Tab.Screen
-      name="SettingsTab"
-      component={Settings}
-      initialParams={{ token, userName,customer_ID, Role }}
-      options={({ navigation }) => ({
-        title: 'Settings',
-        headerRight: () => (
-          <Button
-            onPress={() => logout(navigation)}
-            title="Log Out"
-            color="#000"
-          />
-        ),
-      })}
-    />
     </Tab.Navigator>
   );
 }
